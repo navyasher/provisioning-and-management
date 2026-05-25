@@ -3020,7 +3020,7 @@ CosaDmlDiWiFiTelemetryInit
 #ifdef RDK_ONEWIFI
         CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval();
 #endif
-
+    }
     else
     {
         CcspTraceInfo(("%s - WHIX_LogInterval already set to 900 in PSM\n", __FUNCTION__));
