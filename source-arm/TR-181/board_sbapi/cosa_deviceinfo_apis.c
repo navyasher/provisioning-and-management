@@ -2944,39 +2944,39 @@ CosaDmlDiGetSyndicationWifiUIBrandingTable
     UNREFERENCED_PARAMETER(pulSize);
     return ANSC_STATUS_SUCCESS;
 }
-static void
-CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval
-    (
-        void
-    )
-{
-    parameterValStruct_t    pVal[1];
-    char                    paramName[256] = "Device.WiFi.WHIX_LogInterval";
-    char                    compName[256]  = "eRT.com.cisco.spvtg.ccsp.wifi";
-    char                    dbusPath[256]  = "/com/cisco/spvtg/ccsp/wifi";
-    char                   *faultParam     = NULL;
-    int                     ret            = 0;
-    CCSP_MESSAGE_BUS_INFO  *bus_info       = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
+// static void
+// CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval
+//     (
+//         void
+//     )
+// {
+//     parameterValStruct_t    pVal[1];
+//     char                    paramName[256] = "Device.WiFi.WHIX_LogInterval";
+//     char                    compName[256]  = "eRT.com.cisco.spvtg.ccsp.wifi";
+//     char                    dbusPath[256]  = "/com/cisco/spvtg/ccsp/wifi";
+//     char                   *faultParam     = NULL;
+//     int                     ret            = 0;
+//     CCSP_MESSAGE_BUS_INFO  *bus_info       = (CCSP_MESSAGE_BUS_INFO *)bus_handle;
 
-    pVal[0].parameterName  = paramName;
-    pVal[0].parameterValue = "900";
-    pVal[0].type           = ccsp_int;
+//     pVal[0].parameterName  = paramName;
+//     pVal[0].parameterValue = "900";
+//     pVal[0].type           = ccsp_int;
 
-    ret = CcspBaseIf_setParameterValues(bus_handle, compName, dbusPath,
-                                        0, 0, pVal, 1, TRUE, &faultParam);
-    if (ret != CCSP_SUCCESS)
-    {
-        CcspTraceWarning(("%s - Failed to push WHIX_LogInterval=900 to WiFi component\n",
-                          __FUNCTION__));
-        if (faultParam)
-            bus_info->freefunc(faultParam);
-    }
-    else
-    {
-        CcspTraceInfo(("%s - Successfully pushed WHIX_LogInterval=900 to WiFi component\n",
-                       __FUNCTION__));
-    }
-}
+//     ret = CcspBaseIf_setParameterValues(bus_handle, compName, dbusPath,
+//                                         0, 0, pVal, 1, TRUE, &faultParam);
+//     if (ret != CCSP_SUCCESS)
+//     {
+//         CcspTraceWarning(("%s - Failed to push WHIX_LogInterval=900 to WiFi component\n",
+//                           __FUNCTION__));
+//         if (faultParam)
+//             bus_info->freefunc(faultParam);
+//     }
+//     else
+//     {
+//         CcspTraceInfo(("%s - Successfully pushed WHIX_LogInterval=900 to WiFi component\n",
+//                        __FUNCTION__));
+//     }
+// }
 
 ANSC_STATUS
 CosaDmlDiWiFiTelemetryInit
@@ -3010,20 +3010,34 @@ CosaDmlDiWiFiTelemetryInit
             PWiFi_Telemetry->ChUtilityLogInterval = 900;
         }
     }
+// PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val));
+//     if (atoi(val) != 900)
+//     {
+//         PWiFi_Telemetry->LogInterval = 900;
+//         PSM_Set_Record_Value2(g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
+//                               DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900");
+// #ifdef RDK_ONEWIFI
+//         CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval();
+// #endif
+//     }
+//     else
+//     {
+//         CcspTraceInfo(("%s - WHIX_LogInterval already set to 900 in PSM\n", __FUNCTION__));
 
-    PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val));
-    if (atoi(val) != 900)
+    if (PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val)) != 0)
     {
-        PWiFi_Telemetry->LogInterval = 900;
-        PSM_Set_Record_Value2(g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                              DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900");
-#ifdef RDK_ONEWIFI
-        CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval();
-#endif
+            PWiFi_Telemetry->LogInterval = 900;
     }
     else
     {
-        CcspTraceInfo(("%s - WHIX_LogInterval already set to 900 in PSM\n", __FUNCTION__));
+        if (val[0] != '\0' )
+        {
+            PWiFi_Telemetry->LogInterval = atoi(val);
+        }
+        else
+        {
+            PWiFi_Telemetry->LogInterval = 900;
+        }
     }
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_NormalizedRssiList, val, sizeof(val)) != 0)
