@@ -2956,6 +2956,11 @@ WiFi_Telemetry_SetParamIntValue
         }
         CcspTraceInfo(("Successfully set  LogInterval in PSM \n"));
 
+        retPsmGet = PSM_Set_Record_Value2(bus_handle, g_Subsystem,
+            "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.LogInterval_Modified", ccsp_string, "true");
+        if (retPsmGet != CCSP_SUCCESS)
+            CcspTraceError(("Set failed for LogInterval.Modified \n"));
+
 #ifdef RDK_ONEWIFI
         parameterValStruct_t pVal[1];
         char                 paramName[256] = "Device.WiFi.WHIX_LogInterval";
