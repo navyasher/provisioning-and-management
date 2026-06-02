@@ -2990,20 +2990,49 @@ CosaDmlDiWiFiTelemetryInit
 //     else
 //     {
 //         CcspTraceInfo(("%s - WHIX_LogInterval already set to 900 in PSM\n", __FUNCTION__));
+#define WHIX_LOG_INTERVAL_DEFAULT_OLD 3600
+#define WHIX_LOG_INTERVAL_DEFAULT_NEW 900
+#define WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD 52
+
+    /* Read OVSDB schema version; default to threshold so existing PSM value is used if version can't be read */
+    int ovsdb_ver_num = WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD;
+    {
+        FILE *vfp = popen("ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db 2>/dev/null", "r");
+        if (vfp != NULL)
+        {
+            char ver_str[64] = {0};
+            if (fgets(ver_str, sizeof(ver_str), vfp) != NULL)
+            {
+                char *last_dot = strrchr(ver_str, '.');
+                if (last_dot != NULL)
+                    ovsdb_ver_num = atoi(last_dot + 1);
+            }
+            pclose(vfp);
+        }
+    }
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val)) != 0)
     {
-            PWiFi_Telemetry->LogInterval = 900;
+        PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
     }
     else
     {
-        if (val[0] != '\0' )
+        if (val[0] != '\0')
         {
-            PWiFi_Telemetry->LogInterval = atoi(val);
+            int psm_interval = atoi(val);
+            if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD) &&
+                (psm_interval == WHIX_LOG_INTERVAL_DEFAULT_OLD))
+            {
+                PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
+            }
+            else
+            {
+                PWiFi_Telemetry->LogInterval = psm_interval;
+            }
         }
         else
         {
-            PWiFi_Telemetry->LogInterval = 900;
+            PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
         }
     }
 
