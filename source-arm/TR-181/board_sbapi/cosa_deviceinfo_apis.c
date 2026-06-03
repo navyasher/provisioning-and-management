@@ -2978,22 +2978,6 @@ CosaDmlDiWiFiTelemetryInit
             PWiFi_Telemetry->ChUtilityLogInterval = 900;
         }
     }
-// PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val));
-//     if (atoi(val) != 900)
-//     {
-//         PWiFi_Telemetry->LogInterval = 900;
-//         PSM_Set_Record_Value2(g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-//                               DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900");
-// #ifdef RDK_ONEWIFI
-//         CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval();
-// #endif
-//     }
-//     else
-//     {
-//         CcspTraceInfo(("%s - WHIX_LogInterval already set to 900 in PSM\n", __FUNCTION__));
-// #define WHIX_LOG_INTERVAL_DEFAULT_OLD 3600
-// #define WHIX_LOG_INTERVAL_DEFAULT_NEW 900
-
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val)) != 0)
     {
@@ -3020,6 +3004,12 @@ CosaDmlDiWiFiTelemetryInit
                 CcspTraceInfo(("%s - LogInterval not user-modified, migrating default 3600 -> 900\n",
                     __FUNCTION__));
                 PWiFi_Telemetry->LogInterval = 900;
+                PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent), 
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
+
+                // PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent), 
+                //                         DMSB_TR181_PSM_WHIX_LogInterval_Modified, ccsp_string, "false" );
+                
             }
             else
             {
