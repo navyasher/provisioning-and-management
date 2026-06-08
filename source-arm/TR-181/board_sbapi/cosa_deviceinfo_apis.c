@@ -2978,19 +2978,7 @@ CosaDmlDiWiFiTelemetryInit
             PWiFi_Telemetry->ChUtilityLogInterval = 900;
         }
     }
-// PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val));
-//     if (atoi(val) != 900)
-//     {
-//         PWiFi_Telemetry->LogInterval = 900;
-//         PSM_Set_Record_Value2(g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-//                               DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900");
-// #ifdef RDK_ONEWIFI
-//         CosaDmlDiWiFiTelemetry_OverrideWhixLogInterval();
-// #endif
-//     }
-//     else
-//     {
-//         CcspTraceInfo(("%s - WHIX_LogInterval already set to 900 in PSM\n", __FUNCTION__));
+
 #define WHIX_LOG_INTERVAL_DEFAULT_OLD 3600
 #define WHIX_LOG_INTERVAL_DEFAULT_NEW 900
 #define WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD 52
@@ -2998,7 +2986,7 @@ CosaDmlDiWiFiTelemetryInit
     CcspTraceWarning(("%s-%d : NTesting 2 \n" , __FUNCTION__, __LINE__ ));
     /* Read OVSDB schema version; default to threshold so existing PSM value is used if version can't be read */
     int ovsdb_ver_num = 0;
-    {
+
         CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
         FILE *vfp = popen("ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db 2>/dev/null", "r");
         if (vfp != NULL)
@@ -3030,7 +3018,7 @@ CosaDmlDiWiFiTelemetryInit
         {
             CcspTraceWarning(("%s-%d : NTesting popen failed\n" , __FUNCTION__, __LINE__ ));
         }
-    }
+
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val)) != 0)
     {
