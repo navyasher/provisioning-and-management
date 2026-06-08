@@ -3003,23 +3003,38 @@ CosaDmlDiWiFiTelemetryInit
         FILE *vfp = popen("ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db 2>/dev/null", "r");
         if (vfp != NULL)
         {
-            CcspTraceWarning(("%s-%d : NTesting 3 \n" , __FUNCTION__, __LINE__ ));
+            CcspTraceWarning(("%s-%d : NTesting 3 vfp:%p\n" , __FUNCTION__, __LINE__, vfp ));
             char ver_str[64] = {0};
             if (fgets(ver_str, sizeof(ver_str), vfp) != NULL)
             {
                 CcspTraceWarning(("%s-%d : NTesting ver_str=%s\n" , __FUNCTION__, __LINE__, ver_str ));
                 char *last_dot = strrchr(ver_str, '.');
                 if (last_dot != NULL)
+                {
                     ovsdb_ver_num = atoi(last_dot + 1);
-                    CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
+                    CcspTraceWarning(("%s-%d : NTesting 4 ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
+                }
+                else
+                {
+                    CcspTraceWarning(("%s-%d : NTesting last dot null\n" , __FUNCTION__, __LINE__ ));
+
+                }
+            }
+            else
+            {
+                CcspTraceWarning(("%s-%d : NTesting fgets failed\n" , __FUNCTION__, __LINE__ ));
             }
             pclose(vfp);
+        }
+        else
+        {
+            CcspTraceWarning(("%s-%d : NTesting popen failed\n" , __FUNCTION__, __LINE__ ));
         }
     }
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val)) != 0)
     {
-        CcspTraceWarning(("%s-%d : NTesting 4\n" , __FUNCTION__, __LINE__ ));
+        CcspTraceWarning(("%s-%d : NTesting 5\n" , __FUNCTION__, __LINE__ ));
         PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
     }
     else
@@ -3030,12 +3045,12 @@ CosaDmlDiWiFiTelemetryInit
             if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD) &&
                 (psm_interval == WHIX_LOG_INTERVAL_DEFAULT_OLD))
             {
-                CcspTraceWarning(("%s-%d : NTesting 5\n" , __FUNCTION__, __LINE__ ));
+                CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
             }
             else
             {
-                CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
+                CcspTraceWarning(("%s-%d : NTesting 7\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = psm_interval;
             }
         }
