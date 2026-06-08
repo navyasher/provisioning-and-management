@@ -2988,7 +2988,7 @@ CosaDmlDiWiFiTelemetryInit
     int ovsdb_ver_num = 0;
 
         CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
-        FILE *vfp = popen("ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db 2>/dev/null", "r");
+        FILE *vfp = popen("/usr/bin/ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db 2>/dev/null", "r");
         if (vfp != NULL)
         {
             CcspTraceWarning(("%s-%d : NTesting 3 vfp:%p\n" , __FUNCTION__, __LINE__, vfp ));
