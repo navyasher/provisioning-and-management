@@ -3021,7 +3021,7 @@ CosaDmlDiWiFiTelemetryInit
                 CcspTraceWarning(("%s-%d : NTesting else fgets failed, trying temp file\n" , __FUNCTION__, __LINE__ ));
                 pclose(vfp);
                 vfp = NULL;
-                system("/usr/bin/ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db > /tmp/ovsdb_ver.txt 2>&1");
+                v_secure_system("/usr/bin/ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db > /tmp/ovsdb_ver.txt 2>&1");
                 FILE *tfp = fopen("/tmp/ovsdb_ver.txt", "r");
                 if (tfp != NULL)
                 {
