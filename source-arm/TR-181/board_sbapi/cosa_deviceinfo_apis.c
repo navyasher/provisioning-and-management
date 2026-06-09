@@ -2988,44 +2988,36 @@ CosaDmlDiWiFiTelemetryInit
     int ovsdb_ver_num = 0;
 
         CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
-        /* Read schema version directly from the DB file (first line contains "version":"X.XX.NNN") */
+        /* Read OVSDB schema version via temp file */
         {
-            FILE *dbf = fopen("/opt/secure/wifi/rdkb-wifi.db", "r");
-            if (dbf != NULL)
+            v_secure_system("/usr/bin/ovsdb-tool db-version /opt/secure/wifi/rdkb-wifi.db > /tmp/ovsdb_ver.txt 2>&1");
+            FILE *tfp = fopen("/tmp/ovsdb_ver.txt", "r");
+            if (tfp != NULL)
             {
-                char db_line[512] = {0};
-                if (fgets(db_line, sizeof(db_line), dbf) != NULL)
+                char ver_str[64] = {0};
+                if (fgets(ver_str, sizeof(ver_str), tfp) != NULL)
                 {
-                    CcspTraceWarning(("%s-%d : NTesting db_line read ok\n", __FUNCTION__, __LINE__));
-                    char *sv = strstr(db_line, "\"version\":\"");
-                    if (sv != NULL)
+                    CcspTraceWarning(("%s-%d : NTesting ver_str=%s\n", __FUNCTION__, __LINE__, ver_str));
+                    char *last_dot = strrchr(ver_str, '.');
+                    if (last_dot != NULL)
                     {
-                        sv += strlen("\"version\":\"");
-                        char *last_dot = strrchr(sv, '.');
-                        if (last_dot != NULL)
-                        {
-                            ovsdb_ver_num = atoi(last_dot + 1);
-                            CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n", __FUNCTION__, __LINE__, ovsdb_ver_num));
-                        }
-                        else
-                        {
-                            CcspTraceWarning(("%s-%d : NTesting version no dot found\n", __FUNCTION__, __LINE__));
-                        }
+                        ovsdb_ver_num = atoi(last_dot + 1);
+                        CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n", __FUNCTION__, __LINE__, ovsdb_ver_num));
                     }
                     else
                     {
-                        CcspTraceWarning(("%s-%d : NTesting version field not found\n", __FUNCTION__, __LINE__));
+                        CcspTraceWarning(("%s-%d : NTesting no dot in ver_str\n", __FUNCTION__, __LINE__));
                     }
                 }
                 else
                 {
-                    CcspTraceWarning(("%s-%d : NTesting db file fgets failed\n", __FUNCTION__, __LINE__));
+                    CcspTraceWarning(("%s-%d : NTesting temp file fgets failed\n", __FUNCTION__, __LINE__));
                 }
-                fclose(dbf);
+                fclose(tfp);
             }
             else
             {
-                CcspTraceWarning(("%s-%d : NTesting db file NOT accessible, errno=%d\n", __FUNCTION__, __LINE__, errno));
+                CcspTraceWarning(("%s-%d : NTesting temp file open failed, errno=%d\n", __FUNCTION__, __LINE__, errno));
             }
         }
 
