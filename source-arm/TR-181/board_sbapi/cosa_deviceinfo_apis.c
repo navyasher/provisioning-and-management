@@ -2988,19 +2988,19 @@ CosaDmlDiWiFiTelemetryInit
     int ovsdb_ver_num = 0;
 
         CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
-        /* Read schema version directly from the DB file (first line contains "schema_version":"X.XX.NNN") */
+        /* Read schema version directly from the DB file (first line contains "version":"X.XX.NNN") */
         {
             FILE *dbf = fopen("/opt/secure/wifi/rdkb-wifi.db", "r");
             if (dbf != NULL)
             {
-                char db_line[256] = {0};
+                char db_line[512] = {0};
                 if (fgets(db_line, sizeof(db_line), dbf) != NULL)
                 {
                     CcspTraceWarning(("%s-%d : NTesting db_line read ok\n", __FUNCTION__, __LINE__));
-                    char *sv = strstr(db_line, "\"schema_version\":\"");
+                    char *sv = strstr(db_line, "\"version\":\"");
                     if (sv != NULL)
                     {
-                        sv += strlen("\"schema_version\":\"");
+                        sv += strlen("\"version\":\"");
                         char *last_dot = strrchr(sv, '.');
                         if (last_dot != NULL)
                         {
@@ -3009,12 +3009,12 @@ CosaDmlDiWiFiTelemetryInit
                         }
                         else
                         {
-                            CcspTraceWarning(("%s-%d : NTesting schema_version no dot found\n", __FUNCTION__, __LINE__));
+                            CcspTraceWarning(("%s-%d : NTesting version no dot found\n", __FUNCTION__, __LINE__));
                         }
                     }
                     else
                     {
-                        CcspTraceWarning(("%s-%d : NTesting schema_version field not found\n", __FUNCTION__, __LINE__));
+                        CcspTraceWarning(("%s-%d : NTesting version field not found\n", __FUNCTION__, __LINE__));
                     }
                 }
                 else
