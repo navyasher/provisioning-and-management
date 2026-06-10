@@ -2981,7 +2981,7 @@ CosaDmlDiWiFiTelemetryInit
 
 #define WHIX_LOG_INTERVAL_DEFAULT_OLD 3600
 #define WHIX_LOG_INTERVAL_DEFAULT_NEW 900
-#define WHIX_LOG_INTERVAL_DB_VER_THRESHOLD 100022
+#define WHIX_LOG_INTERVAL_DB_VER_THRESHOLD 100052
 
     CcspTraceWarning(("%s-%d : NTesting 2 \n" , __FUNCTION__, __LINE__ ));
     /* Read previous firmware DB version from /tmp/wifi_db_old_version written by OneWifi */
