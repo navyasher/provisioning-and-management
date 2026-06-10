@@ -2981,48 +2981,30 @@ CosaDmlDiWiFiTelemetryInit
 
 #define WHIX_LOG_INTERVAL_DEFAULT_OLD 3600
 #define WHIX_LOG_INTERVAL_DEFAULT_NEW 900
-#define WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD 52
+#define WHIX_LOG_INTERVAL_DB_VER_THRESHOLD 100022
 
     CcspTraceWarning(("%s-%d : NTesting 2 \n" , __FUNCTION__, __LINE__ ));
-    /* Read OVSDB schema version; default to threshold so existing PSM value is used if version can't be read */
+    /* Read previous firmware DB version from /tmp/wifi_db_old_version written by OneWifi */
     int ovsdb_ver_num = 0;
 
         CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
-        /* Read OVSDB schema version by scanning DB file for "version":"X.XX.NNN" */
         {
-            FILE *dbf = fopen("/opt/secure/wifi/rdkb-wifi.db", "r");
-            if (dbf != NULL)
+            FILE *vfp = fopen("/tmp/wifi_db_old_version", "r");
+            if (vfp != NULL)
             {
-                char db_line[512] = {0};
-                while (fgets(db_line, sizeof(db_line), dbf) != NULL)
+                if (fscanf(vfp, "%d", &ovsdb_ver_num) == 1)
                 {
-                    char *sv = strstr(db_line, "\"version\":\"");
-                    if (sv != NULL)
-                    {
-                        sv += strlen("\"version\":\"");
-                        char *last_dot = strrchr(sv, '.');
-                        if (last_dot != NULL)
-                        {
-                            ovsdb_ver_num = atoi(last_dot + 1);
-                            CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n", __FUNCTION__, __LINE__, ovsdb_ver_num));
-                        }
-                        else
-                        {
-                            CcspTraceWarning(("%s-%d : NTesting version no dot found\n", __FUNCTION__, __LINE__));
-                        }
-                        break;
-                    }
-                    memset(db_line, 0, sizeof(db_line));
+                    CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n", __FUNCTION__, __LINE__, ovsdb_ver_num));
                 }
-                if (ovsdb_ver_num == 0)
+                else
                 {
-                    CcspTraceWarning(("%s-%d : NTesting version field not found in db\n", __FUNCTION__, __LINE__));
+                    CcspTraceWarning(("%s-%d : NTesting failed to read db version\n", __FUNCTION__, __LINE__));
                 }
-                fclose(dbf);
+                fclose(vfp);
             }
             else
             {
-                CcspTraceWarning(("%s-%d : NTesting db file NOT accessible, errno=%d\n", __FUNCTION__, __LINE__, errno));
+                CcspTraceWarning(("%s-%d : NTesting wifi_db_old_version not found, errno=%d\n", __FUNCTION__, __LINE__, errno));
             }
         }
 
@@ -3037,7 +3019,7 @@ CosaDmlDiWiFiTelemetryInit
         if (val[0] != '\0')
         {
             int psm_interval = atoi(val);
-            if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_SCHEMA_VER_THRESHOLD) &&
+            if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) &&
                 (psm_interval == WHIX_LOG_INTERVAL_DEFAULT_OLD))
             {
                 CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
