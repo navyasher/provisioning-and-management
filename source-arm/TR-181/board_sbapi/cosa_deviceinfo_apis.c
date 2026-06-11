@@ -3047,6 +3047,8 @@ CosaDmlDiWiFiTelemetryInit
     {
         CcspTraceWarning(("%s-%d : NTesting 8\n" , __FUNCTION__, __LINE__ ));
         PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
+        PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
+                                    DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "true" );
     }
     else
     {
