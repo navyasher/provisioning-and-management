@@ -3045,17 +3045,23 @@ CosaDmlDiWiFiTelemetryInit
 
     if(PsmGet(DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, val, sizeof(val)) != 0)
     {
+        CcspTraceWarning(("%s-%d : NTesting 8\n" , __FUNCTION__, __LINE__ ));
         PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
     }
     else
     {
         if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) && strcmp(val,"true") != 0)
         {
+            CcspTraceWarning(("%s-%d : NTesting 9\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
                                        DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "true" );
         }
-        PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"true") == 0) ? TRUE : FALSE;
+        else
+        {
+            CcspTraceWarning(("%s-%d : NTesting 10\n" , __FUNCTION__, __LINE__ ));
+            PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"true") == 0) ? TRUE : FALSE;
+        }
     }
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_NormalizedRssiList, val, sizeof(val)) != 0)
