@@ -170,7 +170,7 @@ extern  ANSC_HANDLE             bus_handle;
 #define DMSB_TR181_PSM_WHIX_CliStatList                                    "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.CliStatList"
 #define DMSB_TR181_PSM_WHIX_TxRxRateList                              "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.TxRxRateList"
 #define DMSB_TR181_PSM_WIFI_TELEMETRY_SNRList                 "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WIFI_TELEMETRY.SNRList"
-
+#define DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE                "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable"
 
 /* Localhost port range for stunnel client to listen/accept */
 #define MIN_PORT_RANGE 3000
@@ -3025,7 +3025,7 @@ CosaDmlDiWiFiTelemetryInit
                 CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
                 PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, WHIX_LOG_INTERVAL_DEFAULT_NEW );
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
             }
             else
             {
@@ -3038,11 +3038,12 @@ CosaDmlDiWiFiTelemetryInit
             CcspTraceWarning(("%s-%d : NTesting 7\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, WHIX_LOG_INTERVAL_DEFAULT_NEW );
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
         }
     }
 
-    if(PsmGet(Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable, val, sizeof(val)) != 0)
+
+    if(PsmGet(DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, val, sizeof(val)) != 0)
     {
         PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
     }
@@ -3052,7 +3053,7 @@ CosaDmlDiWiFiTelemetryInit
         {
             PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                       Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable, ccsp_string, "true" );
+                                       DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "true" );
         }
         PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"true") == 0) ? TRUE : FALSE;
     }
