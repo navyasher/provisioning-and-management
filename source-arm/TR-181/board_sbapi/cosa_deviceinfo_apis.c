@@ -3025,7 +3025,7 @@ CosaDmlDiWiFiTelemetryInit
                 CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
                 PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, WHIX_LOG_INTERVAL_DEFAULT_NEW );
             }
             else
             {
@@ -3038,8 +3038,23 @@ CosaDmlDiWiFiTelemetryInit
             CcspTraceWarning(("%s-%d : NTesting 7\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, WHIX_LOG_INTERVAL_DEFAULT_NEW );
         }
+    }
+
+    if(PsmGet(Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable, val, sizeof(val)) != 0)
+    {
+        PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
+    }
+    else
+    {
+        if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) && strcmp(val,"true") != 0)
+        {
+            PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
+            PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
+                                       Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable, ccsp_string, "true" );
+        }
+        PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"true") == 0) ? TRUE : FALSE;
     }
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_NormalizedRssiList, val, sizeof(val)) != 0)
