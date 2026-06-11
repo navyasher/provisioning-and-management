@@ -3024,6 +3024,8 @@ CosaDmlDiWiFiTelemetryInit
             {
                 CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
+                PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
             }
             else
             {
@@ -3035,6 +3037,8 @@ CosaDmlDiWiFiTelemetryInit
         {
             CcspTraceWarning(("%s-%d : NTesting 7\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
+            PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
+                                       DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
         }
     }
 
