@@ -170,7 +170,7 @@ extern  ANSC_HANDLE             bus_handle;
 #define DMSB_TR181_PSM_WHIX_CliStatList                                    "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.CliStatList"
 #define DMSB_TR181_PSM_WHIX_TxRxRateList                              "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WHIX.TxRxRateList"
 #define DMSB_TR181_PSM_WIFI_TELEMETRY_SNRList                 "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_WIFI_TELEMETRY.SNRList"
-#define DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE                "dmsb.device.deviceinfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable"
+#define PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE                        "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable"
 
 /* Localhost port range for stunnel client to listen/accept */
 #define MIN_PORT_RANGE 3000
@@ -3042,27 +3042,26 @@ CosaDmlDiWiFiTelemetryInit
         }
     }
 
-
-    if(PsmGet(DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, val, sizeof(val)) != 0)
+    if(PsmGet(PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE, val, sizeof(val)) != 0)
     {
         CcspTraceWarning(("%s-%d : NTesting 8\n" , __FUNCTION__, __LINE__ ));
         PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
         PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                    DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "true" );
+                                    PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "1" );
     }
     else
     {
-        if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) && strcmp(val,"true") != 0)
+        if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) && strcmp(val,"1") != 0)
         {
             CcspTraceWarning(("%s-%d : NTesting 9\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
-                                       DMSB_TR181_PSM_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "true" );
+                                       PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "1" );
         }
         else
         {
-            CcspTraceWarning(("%s-%d : NTesting 10\n" , __FUNCTION__, __LINE__ ));
-            PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"true") == 0) ? TRUE : FALSE;
+            CcspTraceWarning(("%s-%d : NTesting 10: ActiveMeasurementsEnable val=%s\n" , __FUNCTION__, __LINE__, val ));
+            PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"1") == 0) ? TRUE : FALSE;
         }
     }
 
