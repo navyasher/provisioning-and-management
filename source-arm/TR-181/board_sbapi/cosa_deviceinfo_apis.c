@@ -2954,7 +2954,6 @@ CosaDmlDiWiFiTelemetryInit
     char val[256] = {0};
     errno_t                         rc              = -1;
 
-    CcspTraceWarning(("%s-%d : NTesting 1\n" , __FUNCTION__, __LINE__ ));
     if (!PWiFi_Telemetry)
     {
         CcspTraceWarning(("%s-%d : NULL param\n" , __FUNCTION__, __LINE__ ));
@@ -2983,35 +2982,32 @@ CosaDmlDiWiFiTelemetryInit
 #define WHIX_LOG_INTERVAL_DEFAULT_NEW 900
 #define WHIX_LOG_INTERVAL_DB_VER_THRESHOLD 100052
 
-    CcspTraceWarning(("%s-%d : NTesting 2 \n" , __FUNCTION__, __LINE__ ));
     /* Read previous firmware DB version from /tmp/wifi_db_old_version written by OneWifi */
     int ovsdb_ver_num = 0;
 
-        CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n" , __FUNCTION__, __LINE__, ovsdb_ver_num ));
         {
             FILE *vfp = fopen("/tmp/wifi_db_old_version", "r");
             if (vfp != NULL)
             {
                 if (fscanf(vfp, "%d", &ovsdb_ver_num) == 1)
                 {
-                    CcspTraceWarning(("%s-%d : NTesting ovsdb_ver_num=%d\n", __FUNCTION__, __LINE__, ovsdb_ver_num));
+                    CcspTraceWarning(("%s-%d :ovsdb_ver_num=%d\n", __FUNCTION__, __LINE__, ovsdb_ver_num));
                 }
                 else
                 {
-                    CcspTraceWarning(("%s-%d : NTesting failed to read db version\n", __FUNCTION__, __LINE__));
+                    CcspTraceWarning(("%s-%d :failed to read db version\n", __FUNCTION__, __LINE__));
                 }
                 fclose(vfp);
             }
             else
             {
-                CcspTraceWarning(("%s-%d : NTesting wifi_db_old_version not found, errno=%d\n", __FUNCTION__, __LINE__, errno));
+                CcspTraceWarning(("%s-%d : wifi_db_old_version not found, errno=%d\n", __FUNCTION__, __LINE__, errno));
             }
         }
 
 
     if (PsmGet(DMSB_TR181_PSM_WHIX_LogInterval, val, sizeof(val)) != 0)
     {
-        CcspTraceWarning(("%s-%d : NTesting 5\n" , __FUNCTION__, __LINE__ ));
         PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
     }
     else
@@ -3022,20 +3018,17 @@ CosaDmlDiWiFiTelemetryInit
             if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) &&
                 (psm_interval == WHIX_LOG_INTERVAL_DEFAULT_OLD))
             {
-                CcspTraceWarning(("%s-%d : NTesting 6\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
                 PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
                                        DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
             }
             else
             {
-                CcspTraceWarning(("%s-%d : NTesting 7\n" , __FUNCTION__, __LINE__ ));
                 PWiFi_Telemetry->LogInterval = psm_interval;
             }
         }
         else
         {
-            CcspTraceWarning(("%s-%d : NTesting 7\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->LogInterval = WHIX_LOG_INTERVAL_DEFAULT_NEW;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
                                        DMSB_TR181_PSM_WHIX_LogInterval, ccsp_string, "900" );
@@ -3044,7 +3037,6 @@ CosaDmlDiWiFiTelemetryInit
 
     if(PsmGet(PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE, val, sizeof(val)) != 0)
     {
-        CcspTraceWarning(("%s-%d : NTesting 8\n" , __FUNCTION__, __LINE__ ));
         PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
         PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
                                     PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "1" );
@@ -3053,14 +3045,12 @@ CosaDmlDiWiFiTelemetryInit
     {
         if ((ovsdb_ver_num < WHIX_LOG_INTERVAL_DB_VER_THRESHOLD) && strcmp(val,"1") != 0)
         {
-            CcspTraceWarning(("%s-%d : NTesting 9\n" , __FUNCTION__, __LINE__ ));
             PWiFi_Telemetry->ActiveMeasurementsEnable = TRUE;
             PSM_Set_Record_Value2( g_MessageBusHandle, g_GetSubsystemPrefix(g_pDslhDmlAgent),
                                        PSM_RFC_WIFI_ACTIVE_MSMT_ENABLE, ccsp_string, "1" );
         }
         else
         {
-            CcspTraceWarning(("%s-%d : NTesting 10: ActiveMeasurementsEnable val=%s\n" , __FUNCTION__, __LINE__, val ));
             PWiFi_Telemetry->ActiveMeasurementsEnable = (strcmp(val,"1") == 0) ? TRUE : FALSE;
         }
     }
