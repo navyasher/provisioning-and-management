@@ -1787,8 +1787,8 @@ void COSADmlGetProcessInfo(PCOSA_DATAMODEL_PROCSTATUS p_info)
 
     p_info->ProcessNumberOfEntries = i;
 
-    fprintf(stderr,"\n %s %d  ProcessNumberOfEntries:%lu",__func__,__LINE__,p_info->ProcessNumberOfEntries);
-    CcspTraceWarning(("\n %s %d  ProcessNumberOfEntries:%lu\n",__func__,__LINE__,p_info->ProcessNumberOfEntries));
+    fprintf(stderr," %s %d  ProcessNumberOfEntries:%lu\n",__func__,__LINE__,p_info->ProcessNumberOfEntries);
+    CcspTraceWarning((" %s %d  ProcessNumberOfEntries:%lu\n",__func__,__LINE__,p_info->ProcessNumberOfEntries));
 }
 
 void test_get_proc_info()
@@ -1827,12 +1827,8 @@ ULONG COSADmlGetCpuUsage()
     ULONG                       UsedTime = 0;
     ULONG                       IdleTime = 0;
     double                      CPUUsage = 0;
-    int                         CPUNum;
 
     AnscZeroMemory(time, sizeof(time));
-
-    CPUNum = sysconf(_SC_NPROCESSORS_ONLN);
-    CcspTraceWarning(("There are %d cpus!\n", CPUNum));
         
     if ( !(fp = fopen("/proc/stat", "r")) )
     {   
@@ -1876,7 +1872,7 @@ ULONG COSADmlGetCpuUsage()
          CcspTraceWarning(("To avoid division by zero error crash\n"));
     } 
     else {
-         CPUUsage = (UsedTime *100 / (UsedTime + IdleTime)) / CPUNum ;
+         CPUUsage = (UsedTime *100 / (UsedTime + IdleTime));
     }    
 
     if( !CPUUsage )
@@ -1963,8 +1959,8 @@ ULONG COSADmlGetProcessNumberOfEntries()
         dir = NULL;
     }
 
-    fprintf(stderr,"\n %s %d  ProcessNumberOfEntries:%lu", __func__, __LINE__, i);
-    CcspTraceWarning(("\n %s %d  ProcessNumberOfEntries:%lu\n", __func__, __LINE__, i));
+    fprintf(stderr," %s %d  ProcessNumberOfEntries:%lu\n", __func__, __LINE__, i);
+    CcspTraceWarning((" %s %d  ProcessNumberOfEntries:%lu\n", __func__, __LINE__, i));
     return i;
 }
 
